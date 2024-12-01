@@ -6,6 +6,7 @@
   <div class="details">
     <h2>{deer.title}</h2>
     <p>Due: {deer.date}</p>
+    <p>Urgency: {deer.urgency}</p>
   </div>
   <input type="checkbox">
 </div>
