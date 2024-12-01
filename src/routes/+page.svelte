@@ -72,11 +72,11 @@
       }]
     }
   }
-  
+
   onMount(async () => {
     deers.set(await loadDeerFromDisk())
   })
-
+  
 </script>
 
 <Header />
@@ -130,16 +130,25 @@
     </div>
   </div>
 {/if}
+
 <style>
 /* Boilerplate */
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
 
-  color: #5a3d2b;
-  background-color: #fef4e8;
+  --bg-color: #fef4e8;
+  --text-color: #5a3d2b;
+  --form-bg: #fff;
+  --button-bg: #f7c6a4;
+  --button-hover-bg: #e5b094;
+  --overlay-bg: rgba(0,0,0,0.5);
+  
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -160,7 +169,7 @@
   right: 20px;
   width: 60px;
   height: 60px;
-  background-color: #f7c6a4;
+  background-color: var(--button-bg);
   border: none;
   border-radius: 60%;
   display: flex;
@@ -170,10 +179,31 @@
   cursor: pointer;
   font-size: 32px;
   color: #fff;
+  transition: background-color 0.3s ease;
 }
 
 .add-deer:hover {
-  background-color: #e5b094
+  background-color: var(--button-hover-bg);
+}
+
+/* Theme Toggle Styling */ 
+.toggle-theme {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: var(--button-bg);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+}
+
+.toggle-theme:hover {
+  background-color: var(--button-hover-bg);
 }
 
 /* Overlay Styling */
@@ -183,7 +213,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: var(--overlay-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -191,19 +221,20 @@
 }
 
 .form-container {
-  background-color: #fff;
+  background-color: var(--form-bg);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   width: 90%;
   max-width: 400px;
   text-align: center;
+  transition: background-color 0.3s ease;
 }
 
 .form-container h2 {
   margin-bottom: 20px;
   font-size: 24px;
-  color: #5a3d2b;
+  color: var(--text-color);
 }
 
 .form-container label {
@@ -211,7 +242,7 @@
   margin-bottom: 10px;
   text-align: left;
   font-size: 14px;
-  color: #5a3d2b;
+  color: var(--text-color);
 }
 
 .form-container input, .form-container select {
@@ -224,6 +255,9 @@
   font-size: 14px;
   font-family: inherit;
   box-sizing: border-box;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .form-container .button-group {
@@ -232,7 +266,7 @@
 }
 
 .form-container button {
-  background-color: #f7c6a4;
+  background-color: var(--button-bg);
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -241,6 +275,6 @@
 }
 
 .form-container button:hover {
-  background-color: #e5b094;
+  background-color: var(--button-hover-bg);
 }
 </style>
