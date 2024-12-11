@@ -46,31 +46,12 @@
     }
   }
   
-  const loadDeerFromDisk = async (): Promise<Deer_t[]> => {
-    try {
-      //const appDirectory = await appDir();
-      //const filePath = `${appDirectory}/data.json`;
-
-      //if (await exists(filePath)) {
-      //  const data = await readFile(filePath)
-      //  return JSON.parse(data)
-      //}
-      // return example deer if no file is found
-      return [{
-        title: "Eat Grass",
-        date: "All The Time",
-        urgency: "High",
-        completed: false,
-      }]
-    } catch (error) {
-      console.error("ERROR READ ", error);
-      return [{
-        title: "Eat Grass",
-        date: "All The Time",
-        urgency: "high",
-        completed: false,
-      }]
-    }
+  const loadDeerFromDisk = async () => {
+    console.log("Grabbing Deer From Disk")
+    let deers: string = await invoke('get_items');
+    let deers_json = JSON.parse(deers)
+    console.log("Deer",deers_json)
+    return deers_json
   }
 
   onMount(async () => {
