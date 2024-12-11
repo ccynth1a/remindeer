@@ -11,7 +11,6 @@
   <input type="checkbox">
 </div>
 <style>
-
 .deer {
   display: flex;
   align-items: center;

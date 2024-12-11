@@ -1,7 +1,8 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/core";
   import { onMount } from "svelte";
-  import { writable } from "svelte/store";
+  import { onDestroy } from "svelte";
+  import { get, writable } from "svelte/store";
   
   import Header from "../components/Header.svelte";
   import Deer from "../components/Deer.svelte"
@@ -56,6 +57,12 @@
 
   onMount(async () => {
     deers.set(await loadDeerFromDisk())
+  })
+
+  onMount(async () => {
+    deers.subscribe(data => {
+      invoke('write_items', { data: data.toString() })
+    })
   })
   
 </script>
