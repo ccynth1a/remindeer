@@ -1,8 +1,7 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/core";
   import { onMount } from "svelte";
-  import { onDestroy } from "svelte";
-  import { get, writable } from "svelte/store";
+  import { derived, writable } from "svelte/store";
   
   import Header from "../components/Header.svelte";
   import Deer from "../components/Deer.svelte"
@@ -12,8 +11,11 @@
   let title = writable<string>("Eat Grass");
   let date = writable<string>("");
   let urgency = writable<string>("");
+
+  let sortType = writable<string>("title")
   
   interface Deer_t {
+    id: number,
     title: string;
     date: string;
     urgency: string;
@@ -22,14 +24,18 @@
 
   export const deers = writable<Deer_t[]>([]);
   
+  export let sortedDeers = derived([deers, sortType], ([$deers, $sortType]) => {
+    return [...$deers].sort((a,b) => {
+      if ($sortType == 'title') return a.title.localeCompare(b.title);
+      if ($sortType == 'urgency') return a.urgency.localeCompare(b.urgency);
+      if ($sortType == 'date') return new Date(a.date) - new Date(b.date);
+    })
+  })
+
   const handleSubmit = async () => {
     try { 
-      // File System Logic Here
-      //const appDirectory = await appDataDir();
-      //const filePath = `${appDirectory}/data.json`;
-      //await writeFile({path: filePath, contents: JSON.stringify($deers)})
-
       const newDeer: Deer_t = {
+        id: $deers.length + 1,
         title: $title,
         date: $date,
         urgency: $urgency,
@@ -69,10 +75,19 @@
 
 <Header />
 <div class="content">
-  {#each $deers as deer}
+  <div class="sort-by">
+    <label for="sort">Sort by:</label>
+    <select id="sort" bind:value={$sortType}>
+      <option value="title">Title</option>
+      <option value="urgency">Urgency</option>
+      <option value="date">Date</option>
+    </select> 
+  </div>
+
+  {#each $sortedDeers as deer (deer.id)}
     <Deer {deer} {deers}/>
   {/each}
-  <button class="save-deer" onclick={writeDeerToDisk}>Save</button>
+  <button class="save-deer" onclick={writeDeerToDisk}>🖫</button>
 </div>
 
 <button onclick={() => showForm.set(true)} class="add-deer" aria-label="Add Deer">+</button>
@@ -179,6 +194,9 @@
   height: 60px;
   background-color: var(--button-bg);
   border: none;
+  padding: 20px;
+  width: 60px;
+  height: 60px;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -189,7 +207,18 @@
   color: #fff;
   transition: background-color 0.3s ease;
   font-weight: bold;
-  
+}
+
+.sort-by {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  border: 2px solid #e0c9b3;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .add-deer:hover {
