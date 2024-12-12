@@ -20,7 +20,7 @@
     completed: boolean;
   }
 
-  let deers = writable<Deer_t[]>([]);
+  export const deers = writable<Deer_t[]>([]);
   
   const handleSubmit = async () => {
     try { 
@@ -59,20 +59,22 @@
     deers.set(await loadDeerFromDisk())
   })
 
-  onMount(async () => {
-    deers.subscribe(data => {
-      invoke('write_items', { data: data.toString() })
+  export const writeDeerToDisk = async () => {
+    deers.subscribe(async (data) => {
+      await invoke('write_items', { data: JSON.stringify(data) })
     })
-  })
+  }
   
 </script>
 
 <Header />
 <div class="content">
   {#each $deers as deer}
-    <Deer {deer} />
+    <Deer {deer} {deers}/>
   {/each}
+  <button class="save-deer" onclick={writeDeerToDisk}>Save</button>
 </div>
+
 <button onclick={() => showForm.set(true)} class="add-deer" aria-label="Add Deer">+</button>
 
 {#if $showForm}
@@ -101,7 +103,7 @@
 
         <label>
           Urgency:
-          <select bind:value={$urgency}>
+          <select required bind:value={$urgency}>
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
@@ -168,6 +170,26 @@
   font-size: 32px;
   color: #fff;
   transition: background-color 0.3s ease;
+}
+
+.save-deer {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  height: 60px;
+  background-color: var(--button-bg);
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+  font-size: 24px;
+  color: #fff;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+  
 }
 
 .add-deer:hover {

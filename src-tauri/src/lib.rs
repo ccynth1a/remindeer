@@ -1,8 +1,7 @@
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+use core::panic;
 use std::{fs, io::Read};
 use serde_json::json;
-use std::path::Path;
-use thiserror::Error;
+use directories_next::ProjectDirs;
 
 #[tauri::command]
 fn get_items() -> String {
@@ -12,16 +11,22 @@ fn get_items() -> String {
         "urgency": "High",
         "completed": false,
     }]).to_string();
-    if !Path::new("items.json").exists() {
-        match fs::File::create("items.json") {
+    let proj_dirs = ProjectDirs::from("com", "remindeer", "app").expect("Could Not Find Project Directories");
+    let data_dir = proj_dirs.data_dir();
+    let file_path = data_dir.join("items.json");
+    if !data_dir.exists() {
+        fs::create_dir_all(data_dir).expect("Could not Create Project Directory");
+    }
+    if !file_path.exists() {
+        match fs::File::create(&file_path) {
             Ok(_) => {
-                fs::write("items.json", &default_json).expect("Failed on Write");
-            }
-            Err(_) => panic!("FUCK")
-        }
+                fs::write(&file_path, &default_json).expect("Could not Write Default Json To Disk");
+            },
+            Err(_) => panic!("Something has SERIOUSLY gone wrong")
+        };
     }
     let mut buff = String::new();
-    match fs::File::open("items.json") {
+    match fs::File::open(&file_path) {
         Ok(mut file) => {
             match file.read_to_string(&mut buff) {
                 Ok(_) => buff,
@@ -34,16 +39,13 @@ fn get_items() -> String {
 
 #[tauri::command]
 fn write_items(data: &str) -> Result<i32, &str> {
-    // DEER FILE IS GUARANTEED TO EXIST
-    match fs::write("items.json", data) {
+    let proj_dirs = ProjectDirs::from("com", "remindeer", "app").expect("Could Not Find Project Directories");
+    let data_dir = proj_dirs.data_dir();
+    let file_path = data_dir.join("items.json");
+    match fs::write(&file_path, data) {
         Ok(_) => Ok(0),
         Err(_) => Err("Unable to Write To Disk")
     }
-}
-
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -51,7 +53,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![greet, get_items, write_items])
+        .invoke_handler(tauri::generate_handler![get_items, write_items])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

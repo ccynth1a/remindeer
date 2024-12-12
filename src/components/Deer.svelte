@@ -1,5 +1,13 @@
 <script lang="ts">
-  let { deer } = $props()
+  let { deer, deers } = $props()
+
+  const removeDeer = () => {
+    setTimeout(() => {
+      deers.update(current => {
+        return current.filter(compare => compare.title != deer.title);      
+      })                                                                    
+    }, 200);
+  }
 </script>
 
 <div class="deer">
@@ -8,7 +16,7 @@
     <p>Due: {deer.date}</p>
     <p>Urgency: {deer.urgency}</p>
   </div>
-  <input type="checkbox">
+  <input type="checkbox" onchange={removeDeer}>
 </div>
 <style>
 .deer {
