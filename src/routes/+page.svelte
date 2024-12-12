@@ -2,11 +2,11 @@
   import { invoke } from "@tauri-apps/api/core";
   import { onMount } from "svelte";
   import { derived, writable } from "svelte/store";
+  import { sendNotification } from "@tauri-apps/plugin-notification";
   
   import Header from "../components/Header.svelte";
   import Deer from "../components/Deer.svelte"
 
-  import { theme, toggleTheme } from "../config";
   // NOTE TO SELF, IMPLEMENT LIGHT THEME DARK THEME TOGGLE BY CREATING A BUTTON TO SWAP THIS
   
   // NOTE: SO FAR THERE HAS BEEN A TON OF ISSUES WITH WORKING WITH THE FILESYSTEM. THIS WILL BE FIXED..AT SOME POINT
@@ -73,15 +73,18 @@
       await invoke('write_items', { data: JSON.stringify(data) })
     })
   }
+
+  const dueDeer = () => {
+    sendNotification({title: "A Deer is Due!", body: "Test Notification"})
+  }
   
 </script>
 
-<div class={$theme == 'light' ? "light" : "dark"}>
 <Header />
 <div class="content">
-  <div class="sort-by">
-    <label for="sort">Sort by:</label>
-    <select id="sort" bind:value={$sortType}>
+  <div class="sort-container">
+    <label for="sort-by">Sort By:</label>
+    <select id="sort-by" bind:value={$sortType}>
       <option value="title">Title</option>
       <option value="urgency">Urgency</option>
       <option value="date">Date</option>
@@ -139,7 +142,6 @@
     </div>
   </div>
 {/if}
-</div>
 
 <style>
 /* Boilerplate */
@@ -147,6 +149,13 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
+
+  --bg-color: #fef4e8;           
+  --text-color: #5a3d2b;
+  --form-bg: #fff;
+  --button-bg: #f7c6a4;
+  --button-hover-bg: #e5b094;
+  --overlay-bg: rgba(0,0,0,0.5);
 
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -158,15 +167,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-}
-
-.light {
-  --bg-color: #fef4e8;           
-  --text-color: #5a3d2b;
-  --form-bg: #fff;
-  --button-bg: #f7c6a4;
-  --button-hover-bg: #e5b094;
-  --overlay-bg: rgba(0,0,0,0.5);
 }
 
 .content {
@@ -216,7 +216,7 @@
   font-weight: bold;
 }
 
-.sort-by {
+.sort-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -226,6 +226,26 @@
   padding: 15px;
   margin-bottom: 10px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.sort-container select {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: border-color 0.3s ease;
+}
+
+.sort-container select:focus {
+  background-color: var(--button-bg)
+}
+
+.sort-container label {
+  font-weight: bold;
+  color: var(--text-color);
+  margin-right: 10px;
 }
 
 .add-deer:hover {

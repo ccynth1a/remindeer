@@ -4,7 +4,7 @@ NOTE: THIS REPOSITORY IS STILL VERY MUCH WORK IN PROGRESS. IT'S PUBLIC SO I CAN 
 
 # What is Remindeer?
 
-Remindeer is a lightweight reminder application written using Tauri. I'm pretty new to Rust and adore Svelte, so this is my first attempt at a GUI application. For me, other reminder apps have always had way more features than I actually use, a lot of the time I just want a simple title, a date, and an urgency, but I'm forced to fill out a ton of other things. Remindeer JUST has these three things and a daemon, making it quick and easy to write reminders.
+Remindeer is a lightweight reminder application written using Tauri. I'm pretty new to Rust and adore Svelte, so this is my first attempt at a GUI application. For me, other reminder apps have always had way more features than I actually use, a lot of the time I just want a simple title, a date, and an urgency, but I'm forced to fill out a ton of other things. Remindeer JUST has these three things and an alerts tab, making it quick and easy to write reminders.
 
 # Future Features 
 
