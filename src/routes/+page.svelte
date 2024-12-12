@@ -5,6 +5,9 @@
   
   import Header from "../components/Header.svelte";
   import Deer from "../components/Deer.svelte"
+
+  import { theme, toggleTheme } from "../config";
+  // NOTE TO SELF, IMPLEMENT LIGHT THEME DARK THEME TOGGLE BY CREATING A BUTTON TO SWAP THIS
   
   // NOTE: SO FAR THERE HAS BEEN A TON OF ISSUES WITH WORKING WITH THE FILESYSTEM. THIS WILL BE FIXED..AT SOME POINT
   let showForm = writable<boolean>(false);
@@ -73,6 +76,7 @@
   
 </script>
 
+<div class={$theme == 'light' ? "light" : "dark"}>
 <Header />
 <div class="content">
   <div class="sort-by">
@@ -135,6 +139,7 @@
     </div>
   </div>
 {/if}
+</div>
 
 <style>
 /* Boilerplate */
@@ -143,13 +148,6 @@
   line-height: 24px;
   font-weight: 400;
 
-  --bg-color: #fef4e8;
-  --text-color: #5a3d2b;
-  --form-bg: #fff;
-  --button-bg: #f7c6a4;
-  --button-hover-bg: #e5b094;
-  --overlay-bg: rgba(0,0,0,0.5);
-  
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -160,6 +158,15 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+.light {
+  --bg-color: #fef4e8;           
+  --text-color: #5a3d2b;
+  --form-bg: #fff;
+  --button-bg: #f7c6a4;
+  --button-hover-bg: #e5b094;
+  --overlay-bg: rgba(0,0,0,0.5);
 }
 
 .content {
